@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: binary_honam
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+    url: jdbc:mysql://localhost:3304/oasis?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    username: root
+    password: 1234
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    # Hibernate DDL 설정은 주석 처리
+    # hibernate:
+    #   ddl-auto: update
