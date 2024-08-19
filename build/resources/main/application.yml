@@ -17,3 +17,16 @@ spring:
     # Hibernate DDL 설정은 주석 처리
     # hibernate:
     #   ddl-auto: update
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui/index.html
+    groups-order: DESC
+    doc-expansion: none
+    tags-sorter: alpha
+    operationsSorter: method
+    disable-swagger-default-url: true
+    display-request-duration: true
+  show-login-endpoint: true
