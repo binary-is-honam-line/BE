@@ -44,4 +44,17 @@ public class User {
     @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<Story> stories = new ArrayList<>();
+
+    public void updatePassword(String encodePw) {
+        this.password = encodePw;
+    }
+
+    public void update(String name, String nickname, String phone) {
+        if (!name.equals(this.name))
+            this.name = name;
+        if (!nickname.equals(this.nickname))
+            this.nickname = nickname;
+        if (!phone.equals(this.phone))
+            this.phone = phone;
+    }
 }
