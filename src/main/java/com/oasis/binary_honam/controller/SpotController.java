@@ -1,9 +1,6 @@
 package com.oasis.binary_honam.controller;
 
-import com.oasis.binary_honam.dto.Spot.SpotCreateRequest;
-import com.oasis.binary_honam.dto.Spot.SpotDetailRequest;
-import com.oasis.binary_honam.dto.Spot.SpotDetailResponse;
-import com.oasis.binary_honam.dto.Spot.SpotSummaryResponse;
+import com.oasis.binary_honam.dto.Spot.*;
 import com.oasis.binary_honam.service.SpotService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -60,5 +57,12 @@ public class SpotController {
                                      Authentication authentication){
         spotService.deleteSpot(spotId, authentication);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/{storyId}/points")
+    @Operation(summary = "장소 좌표 목록 전체 조회")
+    public List<SpotPointResponse> getSpotsPoints(Long storyId,
+                                                  Authentication authentication){
+        return spotService.getSpotsPoints(storyId, authentication);
     }
 }
