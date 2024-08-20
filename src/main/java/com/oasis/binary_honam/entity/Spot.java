@@ -1,13 +1,19 @@
 package com.oasis.binary_honam.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Data
 @Entity
 @Table(name = "spot")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Spot {
 
     @Id
@@ -15,8 +21,8 @@ public class Spot {
     private Long spotId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "spot_list_id", nullable = false)
-    private SpotList spotList;
+    @JoinColumn(name = "story_id", nullable = false)
+    private Story story;
 
     @Column(length = 255)
     private String spotName;
@@ -39,5 +45,12 @@ public class Spot {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
+
+    public void update(String spotStory, String spotDes) {
+        if (!spotDes.equals(this.spotDes))
+            this.spotDes = spotDes;
+        if (!spotStory.equals(this.spotStory))
+            this.spotStory = spotStory;
+    }
 }
 
