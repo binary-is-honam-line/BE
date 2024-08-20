@@ -1,9 +1,6 @@
 package com.oasis.binary_honam.service;
 
-import com.oasis.binary_honam.dto.Spot.SpotCreateRequest;
-import com.oasis.binary_honam.dto.Spot.SpotDetailRequest;
-import com.oasis.binary_honam.dto.Spot.SpotDetailResponse;
-import com.oasis.binary_honam.dto.Spot.SpotSummaryResponse;
+import com.oasis.binary_honam.dto.Spot.*;
 import com.oasis.binary_honam.entity.Quiz;
 import com.oasis.binary_honam.entity.Spot;
 import com.oasis.binary_honam.entity.Story;
@@ -166,5 +163,33 @@ public class SpotService {
         }
 
         spotRepository.deleteById(spotId);
+    }
+
+    public List<SpotPointResponse> getSpotsPoints(Long storyId, Authentication authentication) {
+        // 사용자 인증 처리
+        User user = (User) userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + authentication.getName()));
+
+        // storyId가 유효하지 않을 때 처리
+        Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 스토리를 찾을 수 없습니다: " + storyId));
+
+        if (!story.getUser().equals(user)) {
+            throw new AccessDeniedException("해당 경로에 접근할 권한이 없습니다.");
+        }
+
+        List<SpotPointResponse> dtos = new ArrayList<>();
+
+        // 장소 목록을 spotId 기준으로 정렬
+        List<Spot> spots = story.getSpots().stream()
+                .sorted(Comparator.comparingLong(Spot::getSpotId))
+                .collect(Collectors.toList());
+
+        for(int i = 0; i<spots.size(); i++){
+            Spot spot = spots.get(i);
+            dtos.add(new SpotPointResponse(i + 1, spot.getSpotId(), spot.getSpotName(), spot.getSpotAddress(), spot.getLat(), spot.getLng()));
+        }
+
+        return dtos;
     }
 }
