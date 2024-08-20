@@ -1,7 +1,9 @@
 package com.oasis.binary_honam.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,8 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "story")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Story {
 
     @Id
@@ -34,7 +38,6 @@ public class Story {
     @OneToMany(mappedBy = "story")
     private List<ClearStory> clearStories = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "spot_list_id")
-    private SpotList spotList;
+    @OneToMany(mappedBy = "story")
+    private List<Spot> spots = new ArrayList<>();
 }
