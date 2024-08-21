@@ -21,14 +21,14 @@ public class StageController {
 
     @GetMapping("/{questId}")
     @Operation(summary = "스테이지 목록 전체 조회")
-    public List<StageSummaryResponse> getStages(Long questId,
+    public List<StageSummaryResponse> getStages(@PathVariable Long questId,
                                               Authentication authentication){
         return stageService.getStages(questId, authentication);
     }
 
     @PostMapping("/{questId}/create")
     @Operation(summary = "스테이지 추가하기")
-    public ResponseEntity createStage(Long questId,
+    public ResponseEntity createStage(@PathVariable Long questId,
                                      StageCreateRequest stageCreateRequest,
                                      Authentication authentication){
         stageService.createStage(questId, stageCreateRequest, authentication);
@@ -37,14 +37,16 @@ public class StageController {
 
     @GetMapping("/{questId}/{stageId}")
     @Operation(summary = "스테이지 상세 조회하기")
-    public StageDetailResponse getStageDetail(Long stageId,
+    public StageDetailResponse getStageDetail(@PathVariable Long questId,
+                                            @PathVariable Long stageId,
                                             Authentication authentication){
         return stageService.getStageDetail(stageId, authentication);
     }
 
     @PutMapping("/{questId}/{stageId}")
     @Operation(summary = "스테이지 상세 수정하기")
-    public ResponseEntity updateStageDetail(Long stageId,
+    public ResponseEntity updateStageDetail(@PathVariable Long questId,
+                                            @PathVariable Long stageId,
                                            StageDetailRequest stageDetailRequest,
                                            Authentication authentication){
         stageService.updateStageDetail(stageId, stageDetailRequest, authentication);
@@ -53,15 +55,16 @@ public class StageController {
 
     @DeleteMapping("/{questId}/{stageId}")
     @Operation(summary = "스테이지 삭제하기")
-    public ResponseEntity deleteStage(Long stageId,
+    public ResponseEntity deleteStage(@PathVariable Long questId,
+                                    @PathVariable Long stageId,
                                      Authentication authentication){
         stageService.deleteStage(stageId, authentication);
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/{stageId}/points")
+    @GetMapping("/{questId}/points")
     @Operation(summary = "스테이지 좌표 목록 전체 조회")
-    public List<StagePointResponse> getStagesPoints(Long questId,
+    public List<StagePointResponse> getStagesPoints(@PathVariable Long questId,
                                                   Authentication authentication){
         return stageService.getStagesPoints(questId, authentication);
     }
