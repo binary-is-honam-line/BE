@@ -137,7 +137,7 @@ public class QuestService {
 
         for(int i = 0; i<quests.size(); i++){
             Quest quest = quests.get(i);
-            dtos.add(new QuestSummaryResponse(quest.getQuestId(), quest.getQuestName(), quest.getLocation(), quest.getUser().getName()));
+            dtos.add(new QuestSummaryResponse(quest.getQuestId(), quest.getQuestName(), quest.getLocation(), quest.getUser().getNickname()));
         }
 
         return dtos;
@@ -150,10 +150,6 @@ public class QuestService {
         Quest quest = questRepository.findById(questId)
                 .orElseThrow(() -> new NoSuchElementException("해당 ID의 퀘스트를 찾을 수 없습니다: " + questId));
 
-        if (!quest.getUser().equals(user)) {
-            throw new AccessDeniedException("해당 경로에 접근할 권한이 없습니다.");
-        }
-
         List<String> stageNames = new ArrayList<>();
 
         for (int i = 0; i<quest.getStages().size(); i++){
@@ -164,7 +160,7 @@ public class QuestService {
                 .questId(quest.getQuestId())
                 .questName(quest.getQuestName())
                 .location(quest.getLocation())
-                .userName(quest.getUser().getName())
+                .userNickname(quest.getUser().getNickname())
                 .mainStory(quest.getMainStory())
                 .stageNames(stageNames)
                 .build();

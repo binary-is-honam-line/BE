@@ -11,5 +11,5 @@ public class QuestSummaryResponse {
     private Long questId;
     private String questName;
     private String location;
-    private String userName;
+    private String userNickname;
 }
