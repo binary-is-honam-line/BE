@@ -156,6 +156,7 @@ public class StageService {
         }
 
         stageRepository.deleteById(stageId);
+        quizRepository.deleteById(stage.getQuiz().getQuizId());
     }
 
     public List<StagePointResponse> getStagesPoints(Long questId, Authentication authentication) {
