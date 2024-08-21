@@ -36,3 +36,15 @@ default:
     path: /static/images/default_image.jpg
 
 file: /tmp/images
+
+openai:
+  model: gpt-3.5-turbo
+  api:
+    key: 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
+    url: https://api.openai.com/v1/chat/completions
+
+#openai:
+#  model: gpt-3.5-turbo
+#  api:
+#    key: ${OPEN_AI_KEY}
+#    url: https://api.openai.com/v1/chat/completions

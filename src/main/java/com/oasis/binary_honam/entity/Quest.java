@@ -63,4 +63,8 @@ public class Quest {
     public void statusUpdate() {
         this.status = Status.EDITING;
     }
+
+    public void saveStory(String mainStory) {
+        this.mainStory = mainStory;
+    }
 }
