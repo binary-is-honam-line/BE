@@ -2,9 +2,12 @@ package com.oasis.binary_honam.service;
 
 import com.oasis.binary_honam.dto.Quest.*;
 import com.oasis.binary_honam.entity.Quest;
+import com.oasis.binary_honam.entity.Stage;
 import com.oasis.binary_honam.entity.User;
 import com.oasis.binary_honam.entity.enums.Status;
 import com.oasis.binary_honam.repository.QuestRepository;
+import com.oasis.binary_honam.repository.QuizRepository;
+import com.oasis.binary_honam.repository.StageRepository;
 import com.oasis.binary_honam.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +32,8 @@ import java.util.*;
 public class QuestService {
     private final QuestRepository questRepository;
     private final UserRepository userRepository;
+    private final QuizRepository quizRepository;
+    private final StageRepository stageRepository;
 
     @Value("${file}")
     private String rootFilePath;
@@ -177,6 +182,13 @@ public class QuestService {
 
         if (!quest.getUser().equals(user)) {
             throw new AccessDeniedException("해당 경로에 접근할 권한이 없습니다.");
+        }
+
+        List<Stage> stages = quest.getStages();
+
+        for (int i = 0; i<stages.size(); i++){
+            stageRepository.deleteById(stages.get(i).getStageId());
+            quizRepository.deleteById(stages.get(i).getQuiz().getQuizId());
         }
 
         questRepository.deleteById(questId);
