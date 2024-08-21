@@ -2,7 +2,10 @@ package com.oasis.binary_honam.service;
 
 import com.oasis.binary_honam.dto.JoinRequest;
 import com.oasis.binary_honam.dto.User.*;
+import com.oasis.binary_honam.entity.QuestAlbum;
+import com.oasis.binary_honam.entity.Quiz;
 import com.oasis.binary_honam.entity.User;
+import com.oasis.binary_honam.repository.QuestAlbumRepository;
 import com.oasis.binary_honam.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final QuestAlbumRepository questAlbumRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public boolean checkEmailDuplicate(String email) {
@@ -26,7 +30,11 @@ public class UserService {
 
     public void securityJoin(JoinRequest joinRequest) {
         joinRequest.setPassword(bCryptPasswordEncoder.encode(joinRequest.getPassword()));
-        User user = joinRequest.toEntity();
+
+        QuestAlbum questAlbum = QuestAlbum.builder().build();
+        questAlbumRepository.save(questAlbum);
+
+        User user = joinRequest.toEntity(questAlbum);
         userRepository.save(user);
     }
 
