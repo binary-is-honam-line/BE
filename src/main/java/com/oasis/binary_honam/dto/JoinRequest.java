@@ -1,5 +1,6 @@
 package com.oasis.binary_honam.dto;
 
+import com.oasis.binary_honam.entity.QuestAlbum;
 import com.oasis.binary_honam.entity.User;
 import com.oasis.binary_honam.entity.enums.Role;
 import jakarta.validation.constraints.NotBlank;
@@ -27,7 +28,7 @@ public class JoinRequest {
 
     private String phone;
 
-    public User toEntity(){
+    public User toEntity(QuestAlbum questAlbum){
         return User.builder()
                 .password(this.password)
                 .name(this.name)
@@ -35,6 +36,7 @@ public class JoinRequest {
                 .email(this.email)
                 .phone(this.phone)
                 .role(Role.USER)
+                .questAlbum(questAlbum)
                 .build();
     }
 
