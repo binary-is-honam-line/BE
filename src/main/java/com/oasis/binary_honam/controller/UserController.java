@@ -41,7 +41,7 @@ public class UserController {
         return userService.getInfo(authentication);
     }
 
-    @PatchMapping("/info")
+    @PutMapping("/info")
     @Operation(summary = "정보 수정")
     public ResponseEntity updateInfo(UpdateInfoRequest updateInfoRequest,
                                      Authentication authentication){
