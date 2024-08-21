@@ -26,9 +26,8 @@ public class QuestController {
     // status: editing
     @PostMapping("/create")
     @Operation(summary = "퀘스트 생성")
-    public ResponseEntity createQuest(Authentication authentication){
-        questService.createQuest(authentication);
-        return new ResponseEntity(HttpStatus.OK);
+    public CreateQuestResponse createQuest(Authentication authentication){
+        return questService.createQuest(authentication);
     }
 
     // 퀘스트 최종 저장, 수정 완료

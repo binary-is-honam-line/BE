@@ -38,7 +38,7 @@ public class QuestService {
 
     // 퀘스트 임시 생성
     // status: editing
-    public void createQuest(Authentication authentication) {
+    public CreateQuestResponse createQuest(Authentication authentication) {
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + authentication.getName()));
 
@@ -54,6 +54,8 @@ public class QuestService {
                 .build();
 
         questRepository.save(quest);
+
+        return new CreateQuestResponse(quest.getQuestId());
     }
 
     private String saveDefaultImage() {
