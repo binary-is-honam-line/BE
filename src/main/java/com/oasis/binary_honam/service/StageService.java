@@ -1,6 +1,6 @@
 package com.oasis.binary_honam.service;
 
-import com.oasis.binary_honam.dto.Spot.*;
+import com.oasis.binary_honam.dto.Stage.*;
 import com.oasis.binary_honam.entity.Quest;
 import com.oasis.binary_honam.entity.Quiz;
 import com.oasis.binary_honam.entity.Stage;
@@ -30,7 +30,6 @@ public class StageService {
     private final QuizRepository quizRepository;
 
     public List<StageSummaryResponse> getStages(Long questId, Authentication authentication) {
-        // 사용자 인증 처리
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + authentication.getName()));
 
@@ -57,7 +56,6 @@ public class StageService {
     }
 
     public void createStage(Long questId, StageCreateRequest stageCreateRequest, Authentication authentication) {
-        // 사용자 인증 처리
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + authentication.getName()));
 
@@ -93,7 +91,6 @@ public class StageService {
     }
 
     public StageDetailResponse getStageDetail(Long stageId, Authentication authentication) {
-        // 사용자 인증 처리
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + authentication.getName()));
 
@@ -117,7 +114,6 @@ public class StageService {
     }
 
     public void updateStageDetail(Long stageId, StageDetailRequest stageDetailRequest, Authentication authentication) {
-        // 사용자 인증 처리
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + authentication.getName()));
 
@@ -149,7 +145,6 @@ public class StageService {
     }
 
     public void deleteStage(Long stageId, Authentication authentication) {
-        // 사용자 인증 처리
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + authentication.getName()));
 
@@ -164,11 +159,9 @@ public class StageService {
     }
 
     public List<StagePointResponse> getStagesPoints(Long questId, Authentication authentication) {
-        // 사용자 인증 처리
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + authentication.getName()));
 
-        // storyId가 유효하지 않을 때 처리
         Quest quest = questRepository.findById(questId)
                 .orElseThrow(() -> new NoSuchElementException("해당 ID의 퀘스틑를 찾을 수 없습니다: " + questId));
 
