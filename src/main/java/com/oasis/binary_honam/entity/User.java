@@ -43,7 +43,11 @@ public class User {
 
     @Builder.Default
     @OneToMany(mappedBy = "user")
-    private List<Story> stories = new ArrayList<>();
+    private List<Quest> quests = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "quest_album_id")
+    private QuestAlbum questAlbum;
 
     public void updatePassword(String encodePw) {
         this.password = encodePw;
