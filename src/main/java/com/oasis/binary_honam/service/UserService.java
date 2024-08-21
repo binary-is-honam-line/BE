@@ -3,7 +3,6 @@ package com.oasis.binary_honam.service;
 import com.oasis.binary_honam.dto.JoinRequest;
 import com.oasis.binary_honam.dto.User.*;
 import com.oasis.binary_honam.entity.QuestAlbum;
-import com.oasis.binary_honam.entity.Quiz;
 import com.oasis.binary_honam.entity.User;
 import com.oasis.binary_honam.repository.QuestAlbumRepository;
 import com.oasis.binary_honam.repository.UserRepository;

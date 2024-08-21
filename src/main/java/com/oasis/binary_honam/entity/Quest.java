@@ -1,6 +1,5 @@
 package com.oasis.binary_honam.entity;
 
-import com.oasis.binary_honam.entity.enums.Role;
 import com.oasis.binary_honam.entity.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

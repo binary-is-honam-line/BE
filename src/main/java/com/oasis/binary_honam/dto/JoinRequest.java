@@ -6,9 +6,6 @@ import com.oasis.binary_honam.entity.enums.Role;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.UUID;
 
 @Getter
 @NoArgsConstructor

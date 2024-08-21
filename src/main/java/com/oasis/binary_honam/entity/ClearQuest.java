@@ -2,10 +2,7 @@ package com.oasis.binary_honam.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Entity
