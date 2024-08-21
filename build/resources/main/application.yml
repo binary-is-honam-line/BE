@@ -30,3 +30,9 @@ springdoc:
     disable-swagger-default-url: true
     display-request-duration: true
   show-login-endpoint: true
+
+default:
+  image:
+    path: /static/images/default_image.jpg
+
+file: /tmp/images
