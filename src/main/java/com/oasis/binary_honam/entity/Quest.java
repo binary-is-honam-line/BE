@@ -3,6 +3,7 @@ package com.oasis.binary_honam.entity;
 import com.oasis.binary_honam.entity.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @Table(name = "quest")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Quest {
 
     @Id
@@ -40,6 +42,25 @@ public class Quest {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Builder.Default
     @OneToMany(mappedBy = "quest")
     private List<Stage> stages = new ArrayList<>();
+
+    public void update(String questName, String location, String mainStory) {
+        if (!questName.equals(this.questName))
+            this.questName = questName;
+        if (!location.equals(this.location))
+            this.location = location;
+        if (!mainStory.equals(this.mainStory))
+            this.mainStory = mainStory;
+        this.status = Status.SAVED;
+    }
+
+    public void imageUpdate(String newImageName) {
+        this.image = newImageName;
+    }
+
+    public void statusUpdate() {
+        this.status = Status.EDITING;
+    }
 }
