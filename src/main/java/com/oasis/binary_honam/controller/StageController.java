@@ -1,6 +1,6 @@
 package com.oasis.binary_honam.controller;
 
-import com.oasis.binary_honam.dto.Spot.*;
+import com.oasis.binary_honam.dto.Stage.*;
 import com.oasis.binary_honam.service.StageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

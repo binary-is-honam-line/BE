@@ -1,4 +1,4 @@
-package com.oasis.binary_honam.dto.Spot;
+package com.oasis.binary_honam.dto.Stage;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StageDetailResponse {
-    private String stageName;
-    private String stageAddress;
+public class StageDetailRequest {
     private String stageDes;
     private String stageStory;
     private String quizContent;
