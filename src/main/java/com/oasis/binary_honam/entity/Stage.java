@@ -52,5 +52,9 @@ public class Stage {
         if (!stageStory.equals(this.stageStory))
             this.stageStory = stageStory;
     }
+
+    public void saveStory(String stageStory) {
+        this.stageStory = stageStory;
+    }
 }
 
