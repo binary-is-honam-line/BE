@@ -13,7 +13,7 @@ public class QuestDetailResponse {
     private Long questId;
     private String questName;
     private String location;
-    private String userName;
+    private String userNickname;
     private String mainStory;
     private List<String> stageNames;
 }
