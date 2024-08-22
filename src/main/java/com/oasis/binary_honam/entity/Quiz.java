@@ -1,5 +1,7 @@
 package com.oasis.binary_honam.entity;
 
+import com.oasis.binary_honam.entity.enums.Answer;
+import com.oasis.binary_honam.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,10 +23,11 @@ public class Quiz {
     @Lob
     private String content;
 
-    @Lob
-    private String answer;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Answer answer;
 
-    public void update(String content, String answer) {
+    public void update(String content, Answer answer) {
         if (!content.equals(this.content))
             this.content = content;
         if (!answer.equals(this.answer))

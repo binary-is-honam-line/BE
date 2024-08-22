@@ -5,6 +5,7 @@ import com.oasis.binary_honam.entity.Quest;
 import com.oasis.binary_honam.entity.Quiz;
 import com.oasis.binary_honam.entity.Stage;
 import com.oasis.binary_honam.entity.User;
+import com.oasis.binary_honam.entity.enums.Answer;
 import com.oasis.binary_honam.repository.QuestRepository;
 import com.oasis.binary_honam.repository.QuizRepository;
 import com.oasis.binary_honam.repository.StageRepository;
@@ -71,7 +72,7 @@ public class StageService {
         // 새로운 Quiz 생성
         Quiz quiz = Quiz.builder()
                 .content("")
-                .answer("")
+                .answer(Answer.N)
                 .build();
         quizRepository.save(quiz);
 
@@ -130,11 +131,11 @@ public class StageService {
         String stageStory = stageDetailRequest.getStageStory() != null ? stageDetailRequest.getStageStory() : "";
         String stageDes = stageDetailRequest.getStageDes() != null ? stageDetailRequest.getStageDes() : "";
         String content = stageDetailRequest.getQuizContent() != null ? stageDetailRequest.getQuizContent() : "";
-        String answer = stageDetailRequest.getQuizAnswer() != null ? stageDetailRequest.getQuizAnswer() : "";
+        Answer answer = stageDetailRequest.getQuizAnswer() != null ? stageDetailRequest.getQuizAnswer() : Answer.N;
 
         if (content.equals(""))
-            answer = "";
-        if (answer.equals(""))
+            answer = Answer.N;
+        if (answer.equals(Answer.N))
             content = "";
 
         stage.update(stageStory, stageDes);
