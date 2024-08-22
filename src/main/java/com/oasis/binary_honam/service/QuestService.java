@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -49,13 +51,17 @@ public class QuestService {
 
         String newImageName = saveDefaultImage();
 
+        LocalTime time = LocalTime.parse("00:00:00");
+
         Quest quest = Quest.builder()
-                .questName("")
+                .questName("임시 저장된 퀘스트")
                 .location("")
                 .mainStory("")
                 .user(user)
                 .status(Status.EDITING)
                 .image(newImageName)
+                .headCount(0)
+                .time(time)
                 .build();
 
         questRepository.save(quest);
@@ -127,7 +133,10 @@ public class QuestService {
         String location = saveQuestRequest.getLocation() != null ? saveQuestRequest.getLocation() : "";
         String mainStory = saveQuestRequest.getMainStory() != null ? saveQuestRequest.getMainStory() : "";
 
-        quest.update(questName, location, mainStory);
+        int headCount = saveQuestRequest.getHeadCount();
+        LocalTime time = LocalTime.parse(saveQuestRequest.getTime());
+
+        quest.update(questName, location, mainStory, headCount, time);
 
         questRepository.save(quest);
     }
@@ -255,6 +264,8 @@ public class QuestService {
                 .image(quest.getImage())
                 .status(quest.getStatus())
                 .stageIds(stageIds)
+                .headCount(quest.getHeadCount())
+                .time(quest.getTime())
                 .build();
 
         return dto;

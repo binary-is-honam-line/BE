@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,8 @@ public class QuestDto {
     private String location;
     private String mainStory;
     private String image;
+    private int headCount;
+    private LocalTime time;
     private Status status;
     private List<Long> stageIds;
 }
