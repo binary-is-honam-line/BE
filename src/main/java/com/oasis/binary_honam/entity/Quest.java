@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +35,12 @@ public class Quest {
 
     @Lob
     private String image;
+
+    @Column
+    private int headCount;
+
+    @Column
+    private LocalTime time;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -66,5 +74,17 @@ public class Quest {
 
     public void saveStory(String mainStory) {
         this.mainStory = mainStory;
+    }
+
+    public void update(String questName, String location, String mainStory, int headCount, LocalTime time) {
+        if (!questName.equals(this.questName))
+            this.questName = questName;
+        if (!location.equals(this.location))
+            this.location = location;
+        if (!mainStory.equals(this.mainStory))
+            this.mainStory = mainStory;
+        this.status = Status.SAVED;
+        this.headCount = headCount;
+        this.time = time;
     }
 }
