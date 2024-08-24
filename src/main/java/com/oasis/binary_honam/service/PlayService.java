@@ -1,7 +1,9 @@
 package com.oasis.binary_honam.service;
 
+import com.oasis.binary_honam.Utils.GeoUtils;
 import com.oasis.binary_honam.dto.Play.QuizAnswerRequest;
 import com.oasis.binary_honam.dto.Play.StageEventResponse;
+import com.oasis.binary_honam.dto.Play.UserLocation;
 import com.oasis.binary_honam.dto.Play.UserStagePointResponse;
 import com.oasis.binary_honam.entity.*;
 import com.oasis.binary_honam.repository.*;
@@ -10,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -111,6 +114,31 @@ public class PlayService {
                 .build();
 
         return stageEventResponse;
+    }
+
+    public boolean checkProximity(Long userStageId, UserLocation userLocation) {
+        UserStage userStage = userStageRepository.findById(userStageId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 userStage를 찾을 수 없습니다: " + userStageId));
+
+        Stage stage = userStage.getStage();
+
+        double userLat = userLocation.getLat().doubleValue();
+        double userLon = userLocation.getLng().doubleValue();
+
+        double stageLat = stage.getLat().doubleValue();
+        double stageLon = stage.getLng().doubleValue();
+
+        // 사용자의 현재 위치와 스테이지 위치 간의 거리 계산
+        double distance = GeoUtils.calculateDistance(userLat, userLon, stageLat, stageLon);
+
+        // 거리 기준 (예: 0.5킬로미터 이내) 설정
+        double threshold = 0.5;
+
+        if (distance <= threshold) {
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public boolean submitQuizAnswer(Long userStageId, QuizAnswerRequest quizAnswerRequest, Authentication authentication) {
