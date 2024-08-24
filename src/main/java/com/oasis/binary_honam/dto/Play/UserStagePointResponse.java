@@ -1,8 +1,5 @@
-package com.oasis.binary_honam.dto.UserStage;
+package com.oasis.binary_honam.dto.Play;
 
-import com.oasis.binary_honam.entity.Stage;
-import com.oasis.binary_honam.entity.User;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -25,7 +25,15 @@ public class UserStage {
     @JoinColumn(name = "stage_id", nullable = false)
     private Stage stage;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "quest_id", nullable = false)
+    private Quest quest;
+
     @Column(name = "is_cleared", nullable = false)
     private boolean isCleared;
+
+    public void update() {
+        this.isCleared = true;
+    }
 }
 

@@ -1,12 +1,20 @@
 package com.oasis.binary_honam.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
 @Entity
 @Table(name = "clear_quest")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ClearQuest {
 
     @Id
@@ -14,7 +22,7 @@ public class ClearQuest {
     private Long clearQuestId;
 
     @Column
-    private Date date;
+    private LocalDate date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quest_album_id", nullable = false)
