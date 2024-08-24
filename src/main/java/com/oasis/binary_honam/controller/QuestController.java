@@ -71,14 +71,6 @@ public class QuestController {
         return questService.getQuests(authentication);
     }
 
-    // 플레이창에서 보일 상세 조회
-    @GetMapping("/{questId}")
-    @Operation(summary = "퀘스트 상세 조회하기")
-    public QuestDetailResponse getQuestDetail(@PathVariable Long questId,
-                                              Authentication authentication){
-        return questService.getQuestDetail(questId, authentication);
-    }
-
     @DeleteMapping("/{questId}")
     @Operation(summary = "퀘스트 삭제하기")
     public ResponseEntity deleteQuest(@PathVariable Long questId,

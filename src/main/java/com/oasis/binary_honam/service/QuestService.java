@@ -177,6 +177,8 @@ public class QuestService {
                 .userNickname(quest.getUser().getNickname())
                 .mainStory(quest.getMainStory())
                 .stageNames(stageNames)
+                .headCount(quest.getHeadCount())
+                .time(quest.getTime())
                 .build();
 
         return dto;
