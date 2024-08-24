@@ -25,9 +25,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Time;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -151,7 +151,7 @@ public class QuestService {
 
         for(int i = 0; i<quests.size(); i++){
             Quest quest = quests.get(i);
-            dtos.add(new QuestSummaryResponse(quest.getQuestId(), quest.getQuestName(), quest.getLocation(), quest.getUser().getNickname()));
+            dtos.add(new QuestSummaryResponse(quest.getQuestId(), quest.getQuestName(), quest.getLocation(), quest.getUser().getNickname(), quest.getHeadCount(), quest.getTime()));
         }
 
         return dtos;
@@ -269,5 +269,81 @@ public class QuestService {
                 .build();
 
         return dto;
+    }
+
+    public List<QuestSummaryResponse> suggestQuest(Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + authentication.getName()));
+
+        // 랜덤하게 5개의 SAVED 상태의 퀘스트를 가져오기
+        List<Quest> quests = questRepository.findRandomQuestsByStatus(Status.SAVED.name(), 5);
+
+        List<QuestSummaryResponse> dtos = quests.stream()
+                .map(quest -> QuestSummaryResponse.builder()
+                        .questId(quest.getQuestId())
+                        .questName(quest.getQuestName())
+                        .location(quest.getLocation())
+                        .userNickname(quest.getUser().getNickname())
+                        .headCount(quest.getHeadCount())
+                        .time(quest.getTime())
+                        .build())
+                .collect(Collectors.toList());
+
+        return dtos;
+    }
+
+    public List<QuestSummaryResponse> searchQuest(SearchQuestRequest searchQuestRequest, Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + authentication.getName()));
+
+        String keyword = searchQuestRequest.getKeyword() != null ? searchQuestRequest.getKeyword() : "전체";
+        String location = searchQuestRequest.getLocation() != null ? searchQuestRequest.getLocation() : "전체";
+
+        // 전남 관련 로케이션 목록 정의
+        List<String> jeonnamLocations = Arrays.asList("광주", "순천", "담양", "여수", "목포", "나주", "무안", "해남", "완도", "영광", "고흥");
+
+        // 전북 관련 로케이션 목록 정의
+        List<String> jeonbukLocations = Arrays.asList("전주", "익산", "군산", "남원", "정읍", "김제", "완주", "고창", "부안", "임실", "순창");
+
+        List<Quest> quests;
+        if ("전체".equals(keyword) && "전체".equals(location)) {
+            // 키워드: 전체 / 위치: 전체 / 상태: SAVED
+            quests = questRepository.findByStatus(Status.SAVED);
+        } else if ("전체".equals(keyword)) {
+            // 키워드: 전체 / 위치: 특정 위치 / 상태: SAVED
+            if ("전남".equals(location)) {
+                quests = questRepository.findByQuestNameContainingAndLocationInAndStatus("", jeonnamLocations, Status.SAVED);
+            } else if ("전북".equals(location)) {
+                quests = questRepository.findByQuestNameContainingAndLocationInAndStatus("", jeonbukLocations, Status.SAVED);
+            } else {
+                quests = questRepository.findByLocationContainingAndStatus(location, Status.SAVED);
+            }
+        } else if ("전체".equals(location)) {
+            // 키워드: 특정 키워드 / 위치: 전체 / 상태: SAVED
+            quests = questRepository.findByQuestNameContainingAndStatus(keyword, Status.SAVED);
+        } else {
+            // 키워드: 특정 키워드 / 위치: 특정 위치 / 상태: SAVED
+            if ("전남".equals(location)) {
+                quests = questRepository.findByQuestNameContainingAndLocationInAndStatus("", jeonnamLocations, Status.SAVED);
+            } else if ("전북".equals(location)) {
+                quests = questRepository.findByQuestNameContainingAndLocationInAndStatus("", jeonbukLocations, Status.SAVED);
+            } else {
+                quests = questRepository.findByQuestNameContainingAndLocationContainingAndStatus(keyword, location, Status.SAVED);
+            }
+        }
+
+        List<QuestSummaryResponse> dtos = quests.stream()
+                .map(quest -> QuestSummaryResponse.builder()
+                        .questId(quest.getQuestId())
+                        .questName(quest.getQuestName())
+                        .location(quest.getLocation())
+                        .userNickname(quest.getUser().getNickname())
+                        .headCount(quest.getHeadCount())
+                        .time(quest.getTime())
+                        .build())
+                .collect(Collectors.toList());
+
+        // 검색 결과 반환
+        return dtos;
     }
 }
