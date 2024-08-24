@@ -1,14 +1,9 @@
 package com.oasis.binary_honam.service;
 
 import com.oasis.binary_honam.dto.Quest.*;
-import com.oasis.binary_honam.entity.Quest;
-import com.oasis.binary_honam.entity.Stage;
-import com.oasis.binary_honam.entity.User;
+import com.oasis.binary_honam.entity.*;
 import com.oasis.binary_honam.entity.enums.Status;
-import com.oasis.binary_honam.repository.QuestRepository;
-import com.oasis.binary_honam.repository.QuizRepository;
-import com.oasis.binary_honam.repository.StageRepository;
-import com.oasis.binary_honam.repository.UserRepository;
+import com.oasis.binary_honam.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -25,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,6 +32,8 @@ public class QuestService {
     private final UserRepository userRepository;
     private final QuizRepository quizRepository;
     private final StageRepository stageRepository;
+    private final QuestAlbumRepository questAlbumRepository;
+    private final ClearQuestRepository clearQuestRepository;
 
     @Value("${file}")
     private String rootFilePath;
@@ -346,6 +344,44 @@ public class QuestService {
                 .collect(Collectors.toList());
 
         // 검색 결과 반환
+        return dtos;
+    }
+
+    public List<ClearQuestResponse> getClearQuest(Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + authentication.getName()));
+
+        QuestAlbum questAlbum = questAlbumRepository.findById(user.getQuestAlbum().getQuestAlbumId())
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 questAlbum을 찾을 수 없습니다."));
+
+        List<ClearQuest> quests = clearQuestRepository.findByQuestAlbum_QuestAlbumId(questAlbum.getQuestAlbumId());
+
+        List<ClearQuestResponse> dtos = new ArrayList<>();
+
+        for (int i = 0; i<quests.size(); i++){
+            ClearQuest quest = quests.get(i);
+
+            List<String> stageNames = new ArrayList<>();
+
+            for (int j = 0; j<quest.getQuest().getStages().size(); j++){
+                stageNames.add(quest.getQuest().getStages().get(i).getStageName());
+            }
+
+            ClearQuestResponse dto = ClearQuestResponse.builder()
+                    .questId(quest.getQuest().getQuestId())
+                    .questName(quest.getQuest().getQuestName())
+                    .location(quest.getQuest().getLocation())
+                    .userNickname(quest.getQuest().getUser().getNickname())
+                    .mainStory(quest.getQuest().getMainStory())
+                    .stageNames(stageNames)
+                    .headCount(quest.getQuest().getHeadCount())
+                    .time(quest.getQuest().getTime())
+                    .date(quest.getDate())
+                    .build();
+
+            dtos.add(dto);
+        }
+
         return dtos;
     }
 }
