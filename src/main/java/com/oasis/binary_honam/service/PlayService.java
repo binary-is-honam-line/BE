@@ -1,17 +1,17 @@
 package com.oasis.binary_honam.service;
 
-import com.oasis.binary_honam.dto.UserStage.UserStagePointResponse;
-import com.oasis.binary_honam.entity.Quest;
-import com.oasis.binary_honam.entity.Stage;
-import com.oasis.binary_honam.entity.User;
-import com.oasis.binary_honam.entity.UserStage;
+import com.oasis.binary_honam.dto.Play.QuizAnswerRequest;
+import com.oasis.binary_honam.dto.Play.StageEventResponse;
+import com.oasis.binary_honam.dto.Play.UserStagePointResponse;
+import com.oasis.binary_honam.entity.*;
 import com.oasis.binary_honam.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -46,6 +46,7 @@ public class PlayService {
                     .user(user)
                     .stage(stage)
                     .isCleared(false)
+                    .quest(quest)
                     .build();
             userStageRepository.save(userStage);
         }
@@ -60,8 +61,7 @@ public class PlayService {
         Quest quest = questRepository.findById(questId)
                 .orElseThrow(() -> new NoSuchElementException("해당 ID의 퀘스틑를 찾을 수 없습니다: " + questId));
 
-        // 사용자와 관련된 모든 스테이지 정보
-        List<UserStage> userStages = userStageRepository.findByUser_UserId(user.getUserId());
+        List<UserStage> userStages = userStageRepository.findByUser_UserIdAndQuest_QuestId(user.getUserId(), questId);
 
         // 모든 스테이지와 관련된 사용자 스테이지 정보를 저장
         List<UserStagePointResponse> dtos = new ArrayList<>();
@@ -85,5 +85,94 @@ public class PlayService {
         }
 
         return dtos;
+    }
+
+    public StageEventResponse getStageEvent(Long userStageId, Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + authentication.getName()));
+
+        UserStage userStage = userStageRepository.findById(userStageId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 userStage를 찾을 수 없습니다: " + userStageId));
+
+        // 이미 클리어된 스테이지는 반환하지 않음
+        if (userStage != null && userStage.isCleared()) {
+            return null; // 스테이지가 이미 클리어된 경우
+        }
+
+        Stage stage = userStage.getStage();
+
+        StageEventResponse stageEventResponse = StageEventResponse.builder()
+                .userStageId(userStage.getUserStageId())
+                .stageName(stage.getStageName())
+                .stageAddress(stage.getStageAddress())
+                .stageStory(stage.getStageStory())
+                .quizContent(stage.getQuiz().getContent())
+                .quizAnswer(stage.getQuiz().getAnswer())
+                .build();
+
+        return stageEventResponse;
+    }
+
+    public boolean submitQuizAnswer(Long userStageId, QuizAnswerRequest quizAnswerRequest, Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + authentication.getName()));
+
+        UserStage userStage = userStageRepository.findById(userStageId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 userStage를 찾을 수 없습니다: " + userStageId));
+
+        Stage stage = userStage.getStage();
+
+        if (quizAnswerRequest.getAnswer().equals(stage.getQuiz().getAnswer())) {
+            userStage.update(); // 스테이지 클리어 상태로 업데이트
+            userStageRepository.save(userStage); // 변경 사항 저장
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isQuestCleared(Long questId, Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + authentication.getName()));
+
+        Quest quest = questRepository.findById(questId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 퀘스트를 찾을 수 없습니다: " + questId));
+
+        List<UserStage> userStages = userStageRepository.findByUser_UserIdAndQuest_QuestId(user.getUserId(), questId);
+
+        boolean allStagesCleared = true;
+
+        for (int i = 0; i<userStages.size(); i++){
+            if(!userStages.get(i).isCleared()){
+                allStagesCleared = false;
+                break;
+            }
+        }
+
+        return allStagesCleared;
+    }
+
+    public void endPlay(Long questId, Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + authentication.getName()));
+
+        Quest quest = questRepository.findById(questId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 퀘스트를 찾을 수 없습니다: " + questId));
+
+        if (!isQuestCleared(questId, authentication)) {
+            throw new IllegalStateException("퀘스트를 아직 클리어하지 않았습니다: " + questId);
+        }
+
+        // 퀘스트가 클리어된 경우 완료 처리 로직
+        ClearQuest clearQuest = ClearQuest.builder()
+                .date(LocalDate.now())
+                .questAlbum(user.getQuestAlbum())
+                .quest(quest)
+                .build();
+
+        clearQuestRepository.save(clearQuest);
+
+        List<UserStage> userStages = userStageRepository.findByUser_UserIdAndQuest_QuestId(user.getUserId(), questId);
+
+        userStageRepository.deleteAll(userStages);
     }
 }
