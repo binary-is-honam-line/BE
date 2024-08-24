@@ -95,10 +95,6 @@ public class QuestService {
         Quest quest = questRepository.findById(questId)
                 .orElseThrow(() -> new NoSuchElementException("해당 ID의 퀘스트를 찾을 수 없습니다: " + questId));
 
-        if (!quest.getUser().equals(user)) {
-            throw new AccessDeniedException("해당 경로에 접근할 권한이 없습니다.");
-        }
-
         try {
             Path path = Paths.get(rootFilePath, quest.getImage()).toAbsolutePath();
             Resource imageResource = new UrlResource(path.toUri());
