@@ -1,6 +1,7 @@
 package com.oasis.binary_honam.controller;
 
 import com.oasis.binary_honam.dto.Play.QuizAnswerRequest;
+import com.oasis.binary_honam.dto.Play.UserLocation;
 import com.oasis.binary_honam.dto.Quest.QuestDetailResponse;
 import com.oasis.binary_honam.dto.Play.StageEventResponse;
 import com.oasis.binary_honam.dto.Play.UserStagePointResponse;
@@ -58,12 +59,17 @@ public class PlayController {
     @Operation(summary = "이벤트 조회")
     public ResponseEntity<StageEventResponse> getStageEvent(@PathVariable Long questId,
                                                             @PathVariable Long userStageId,
+                                                            UserLocation userLocation,
                                                             Authentication authentication) {
-        StageEventResponse response = playService.getStageEvent(userStageId, authentication);
-        if (response == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 스테이지가 이미 클리어된 경우
+        if (playService.checkProximity(userStageId, userLocation)){
+            StageEventResponse response = playService.getStageEvent(userStageId, authentication);
+            if (response == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 스테이지가 이미 클리어된 경우
+            }
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 스테이지 근처가 아닌 경우
         }
-        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/{questId}/{userStageId}")
