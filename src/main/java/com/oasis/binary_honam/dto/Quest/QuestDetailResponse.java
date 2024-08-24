@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Data
@@ -16,4 +17,6 @@ public class QuestDetailResponse {
     private String userNickname;
     private String mainStory;
     private List<String> stageNames;
+    private int headCount;
+    private LocalTime time;
 }
