@@ -132,7 +132,7 @@ public class PlayService {
         double distance = GeoUtils.calculateDistance(userLat, userLon, stageLat, stageLon);
 
         // 거리 기준 (예: 0.5킬로미터 이내) 설정
-        double threshold = 0.5;
+        double threshold = 0.05;
 
         if (distance <= threshold) {
             return true;
