@@ -3,7 +3,6 @@ package com.oasis.binary_honam.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oasis.binary_honam.config.auth.AuthFailureHandler;
 import com.oasis.binary_honam.config.auth.PrincipalDetailsService;
-import com.oasis.binary_honam.config.security.CustomSessionExpiredStrategy;
 import com.oasis.binary_honam.entity.enums.Role;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,6 @@ public class SecurityConfig {
 
     private final AuthFailureHandler authFailureHandler;
     private final PrincipalDetailsService principalDetailsService;
-    private final CustomSessionExpiredStrategy customSessionExpiredStrategy;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -94,10 +92,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .sessionFixation().migrateSession()
-                        .invalidSessionUrl("/login")
+                        .invalidSessionUrl("/logout")
                         .maximumSessions(1)
-//                        .expiredUrl("/login")
-                        .expiredSessionStrategy(customSessionExpiredStrategy)
+                        .expiredUrl("/logout")
                 )
                 .userDetailsService(principalDetailsService);
 
