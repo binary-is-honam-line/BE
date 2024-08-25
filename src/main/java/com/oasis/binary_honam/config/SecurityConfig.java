@@ -3,6 +3,7 @@ package com.oasis.binary_honam.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oasis.binary_honam.config.auth.AuthFailureHandler;
 import com.oasis.binary_honam.config.auth.PrincipalDetailsService;
+import com.oasis.binary_honam.config.security.CustomSessionExpiredStrategy;
 import com.oasis.binary_honam.entity.enums.Role;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -27,10 +29,16 @@ public class SecurityConfig {
 
     private final AuthFailureHandler authFailureHandler;
     private final PrincipalDetailsService principalDetailsService;
+    private final CustomSessionExpiredStrategy customSessionExpiredStrategy;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
     }
 
     @Bean
@@ -88,7 +96,8 @@ public class SecurityConfig {
                         .sessionFixation().migrateSession()
                         .invalidSessionUrl("/login")
                         .maximumSessions(1)
-                        .expiredUrl("/login")
+//                        .expiredUrl("/login")
+                        .expiredSessionStrategy(customSessionExpiredStrategy)
                 )
                 .userDetailsService(principalDetailsService);
 
