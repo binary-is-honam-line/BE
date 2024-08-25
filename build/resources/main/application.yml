@@ -49,4 +49,4 @@ openai:
 server:
   servlet:
     session:
-      timeout: 1m
+      timeout: 5s
