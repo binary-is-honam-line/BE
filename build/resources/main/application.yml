@@ -10,10 +10,11 @@ spring:
 
     url: jdbc:mysql://localhost:3304/oasis?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
     username: root
-    password: 1234
+    password: ${DB_PASSWORD}
 
   jpa:
     show-sql: true
+    open-in-view: false
     properties:
       hibernate:
         format_sql: true
@@ -49,4 +50,16 @@ openai:
 server:
   servlet:
     session:
-      timeout: 5s
+      timeout: 120m
+
+#  port: 443
+#
+#  ssl:
+#    enabled: true
+#    enabled-protocols:
+#      - TLSv1.1
+#      - TLSv1.2
+#    key-store: ${KEY_STORE}
+#    key-store-password: ${KEY_STORE_PASSWORD}
+#    key-store-type: ${KEY_STORE_TYPE}
+
