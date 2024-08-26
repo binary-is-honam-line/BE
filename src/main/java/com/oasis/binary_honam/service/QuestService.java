@@ -320,9 +320,9 @@ public class QuestService {
         } else {
             // 키워드: 특정 키워드 / 위치: 특정 위치 / 상태: SAVED
             if ("전남".equals(location)) {
-                quests = questRepository.findByQuestNameContainingAndLocationInAndStatus("", jeonnamLocations, Status.SAVED);
+                quests = questRepository.findByLocationsContainingAndStatus(jeonnamLocations, Status.SAVED);
             } else if ("전북".equals(location)) {
-                quests = questRepository.findByQuestNameContainingAndLocationInAndStatus("", jeonbukLocations, Status.SAVED);
+                quests = questRepository.findByLocationsContainingAndStatus(jeonbukLocations, Status.SAVED);
             } else {
                 quests = questRepository.findByQuestNameContainingAndLocationContainingAndStatus(keyword, location, Status.SAVED);
             }

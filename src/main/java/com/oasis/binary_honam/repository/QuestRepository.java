@@ -26,9 +26,17 @@ public interface QuestRepository extends JpaRepository<Quest, Long> {
     List<Quest> findByStatus(Status status);
 
     // 전남, 전북 선택 했을때 퀘스트 검색
+    // 키워드: 특정 키워드 / 위치: 전남, 전북 / 상태: SAVED
     @Query("SELECT q FROM Quest q WHERE q.status = :status AND q.questName LIKE %:keyword% AND q.location IN (:locations)")
     List<Quest> findByQuestNameContainingAndLocationInAndStatus(
             @Param("keyword") String keyword,
+            @Param("locations") List<String> locations,
+            @Param("status") Status status
+    );
+
+    // 키워드: 전체 / 위치: 전남, 전북 / 상태: SAVED
+    @Query("SELECT q FROM Quest q WHERE q.status = :status AND q.location IN (:locations)")
+    List<Quest> findByLocationsContainingAndStatus(
             @Param("locations") List<String> locations,
             @Param("status") Status status
     );
